@@ -16,7 +16,7 @@ jobs:
   # ---- Community: 3 groups run one after another ----
   community-a:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-    uses: ./.github/workflows/enrichment-group.yml
+    uses: ./.github/workflows/enrichment_group.yml
     with:
       type: community
       group_name: community-a
@@ -27,7 +27,7 @@ jobs:
   community-b:
     needs: community-a
     if: ${{ always() && (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success') }}
-    uses: ./.github/workflows/enrichment-group.yml
+    uses: ./.github/workflows/enrichment_group.yml
     with:
       type: community
       group_name: community-b
@@ -38,7 +38,7 @@ jobs:
   community-c:
     needs: community-b
     if: ${{ always() && (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success') }}
-    uses: ./.github/workflows/enrichment-group.yml
+    uses: ./.github/workflows/enrichment_group.yml
     with:
       type: community
       group_name: community-c
