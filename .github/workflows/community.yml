@@ -253,10 +253,12 @@ jobs:
           with open(os.path.join(output_base, f"failed_pages_{category}.json"), "w", encoding="utf-8") as f:
               json.dump(failed_pages_data, f, ensure_ascii=False, indent=2)
 
-          # Process data (NO phone_lookup)
+          # Only web_computer_services gets its images downloaded/uploaded;
+          # every other category stays data-only (NO phone_lookup either).
+          upload_images = (category == "web_computer_services")
           result = process_category(
               category, jsonl_files, output_base,
-              upload_images=False, enrich_description=True
+              upload_images=upload_images, enrich_description=True
           )
 
           print(f"\nCategory: {category} | Total rows: {result['total']} | Excel files: {len(result['excel_files'])}")
