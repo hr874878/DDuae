@@ -1,9 +1,15 @@
-name: Community
-
 on:
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
+    inputs:
+      target_date:
+        description: "Scrape date (YYYY-MM-DD) - leave empty for yesterday"
+        required: false
+        type: string
+
+env:
+  TARGET_DATE: ${{ inputs.target_date }}
 
 jobs:
   detect_pages:
@@ -188,7 +194,7 @@ jobs:
           import boto3
           import re
           import pandas as pd
-          from datetime import datetime
+          from datetime import datetime, timedelta
           from dub_writer import process_category
 
           WORKFLOW_NAME = os.environ.get("WORKFLOW_NAME", "Unknown")
@@ -196,7 +202,8 @@ jobs:
           category = "${{ matrix.category }}"
           jsonl_files = glob.glob('raw_parts/*.jsonl')
 
-          dt = datetime.now()
+          _t = os.environ.get("TARGET_DATE")
+          dt = (datetime.strptime(_t, "%Y-%m-%d") + timedelta(days=1)) if _t else datetime.now()
           date_prefix = f"year={dt.year}/month={dt.strftime('%m')}/day={dt.strftime('%d')}"
 
           client = boto3.client('s3',

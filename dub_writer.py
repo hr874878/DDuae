@@ -29,6 +29,13 @@ COLUMNS_TO_DROP = [
 
 WORKFLOW_NAME = os.environ.get("WORKFLOW_NAME", "Unknown")
 
+def get_save_dt() -> datetime:
+    """Save date = TARGET_DATE + 1 day if set, otherwise now (UTC)."""
+    t = os.getenv("TARGET_DATE")
+    if t:
+        return datetime.strptime(t, "%Y-%m-%d").replace(tzinfo=timezone.utc) + timedelta(days=1)
+    return datetime.now(timezone.utc)
+
 def get_category_path(category_v2_value) -> str:
     """Build R2 folder path from category_v2.slug_paths dynamically.
 
@@ -269,7 +276,7 @@ def download_images(images: list, slug: str = "", category: str = "", id_prod: s
     ext = "webp"
     slug = slug or "unknown"
     file_prefix = id_prod if id_prod else slug
-    today = datetime.now(timezone.utc)
+    today = get_save_dt()
 
     category_display = f"{cat0}/{cat1}" if cat0 and cat1 else (cat1 or cat0)
 
@@ -648,7 +655,7 @@ def _process_dataframe(df: pd.DataFrame, category_name: str, output_base_dir: st
             excel_files.append(xlsx_path)
             json_files.append(json_path)
 
-        dt = datetime.now(timezone.utc)
+        dt = get_save_dt()
         category_path = get_category_path(group_df["category_v2"].iloc[0]) if not group_df.empty and "category_v2" in group_df.columns else f"{safe_cat0}/{safe_cat1}"
         summary = build_group_summary(sheets, group_df, safe_cat0, safe_cat1, dt, output_base_dir, category_path)
         summary_file_path = os.path.join(summary_dir, "summary.json")

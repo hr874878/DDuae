@@ -4,6 +4,7 @@ import time
 import requests
 import random
 #import pandas as pd
+import os
 from datetime import datetime, timezone, timedelta
 from request_tracker import tracker
 from zoneinfo import ZoneInfo
@@ -171,7 +172,12 @@ CATEGORIES = {
 }
 
 dubai_now = datetime.now(ZoneInfo("Asia/Dubai"))
-TARGET_DATE = (dubai_now.date() - timedelta(days=1))
+
+_td = os.getenv("TARGET_DATE")
+if _td:
+    TARGET_DATE = datetime.strptime(_td, "%Y-%m-%d").date()
+else:
+    TARGET_DATE = dubai_now.date() - timedelta(days=1)
 
 def filter_yesterday_hits(hits):
     filtered = []

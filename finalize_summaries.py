@@ -10,7 +10,7 @@ import json
 import os
 import glob
 import io
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from r2_uploader import upload_buffer
 
@@ -129,7 +129,11 @@ def finalize_summaries(summaries_dir: str, workflow_name: str = None, aggregate:
     failed_items stay embedded inside that same file, never as separate
     uploads.
     """
-    dt = datetime.now(timezone.utc)
+    _t = os.getenv("TARGET_DATE")
+    if _t:
+        dt = datetime.strptime(_t, "%Y-%m-%d").replace(tzinfo=timezone.utc) + timedelta(days=1)
+    else:
+        dt = datetime.now(timezone.utc)
     date_prefix = f"year={dt.year}/month={dt.strftime('%m')}/day={dt.strftime('%d')}"
 
     workflow_duration = os.getenv("WORKFLOW_DURATION")
