@@ -171,13 +171,13 @@ CATEGORIES = {
     },
 }
 
-dubai_now = datetime.now(ZoneInfo("Asia/Dubai"))
+utc_now = datetime.now(timezone.utc)
 
 _td = os.getenv("TARGET_DATE")
 if _td:
     TARGET_DATE = datetime.strptime(_td, "%Y-%m-%d").date()
 else:
-    TARGET_DATE = dubai_now.date() - timedelta(days=1)
+    TARGET_DATE = utc_now.date() - timedelta(days=1)
 
 def filter_yesterday_hits(hits):
     filtered = []
@@ -187,8 +187,7 @@ def filter_yesterday_hits(hits):
             continue
         try:
             dt_utc = datetime.fromtimestamp(int(timestamp_value), tz=timezone.utc)
-            dt_dubai = dt_utc.astimezone(ZoneInfo("Asia/Dubai"))
-            if dt_dubai.date() == TARGET_DATE:
+            if dt_utc.date() == TARGET_DATE:
                 filtered.append(hit)
         except (ValueError, TypeError):
             pass

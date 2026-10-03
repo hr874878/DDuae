@@ -16,7 +16,7 @@ on:
         required: true
         type: string
       date:
-        description: "YYYY-MM-DD; empty = yesterday in Asia/Dubai"
+        description: "YYYY-MM-DD; empty = yesterday"
         required: false
         type: string
         default: ""
@@ -44,7 +44,7 @@ on:
         required: true
         type: string
       date:
-        description: "YYYY-MM-DD; empty = yesterday in Asia/Dubai"
+        description: "YYYY-MM-DD; empty = yesterday"
         required: false
         type: string
 
